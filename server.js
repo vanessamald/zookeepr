@@ -9,6 +9,10 @@ const PORT = process.env.PORT || 3001;
 // initiate the server
 const app = express();
 
+// middleware that instructs the server to make our css readily available
+    // this makes the files static resources
+app.use(express.static('public'));
+
 // parse incoming string or array data
          // USE is a method that mounts a fucntion to the server 
         //that our requests will pass through before getting to the intended endpoint
@@ -25,6 +29,29 @@ app.use(express.json());
         // both middleware functions above need to be set up every time we create a server 
         // thats's looking to accept POST data
 
+// the forward slash brings us to the root route of the server
+    // used to create a homepage for a server
+    // displays the html
+app.get('/', (req, res) => {
+    // this points to the file we want the server to read and send back to client
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// /animal endpoint serves an HTML page
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+// the route for the zookeepers.html
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+// wildcard request, any route that wasn't defiined previously will fall under this request
+    // the * should always come last 
+app.get('#', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
 
 // make our server listen
 app.listen(PORT, () => {
@@ -129,6 +156,7 @@ app.get('/api/animals', (req, res) => {
 });
 
 // a route that listens for GET requests
+// endpoints that include /api refer to JSON data being transferred
     // a GET request is made every time we enter a URL into the browser and press ENTER
 app.get('/api/animals/:id', (req, res) => {
     const result = findById(req.params.id, animals);
